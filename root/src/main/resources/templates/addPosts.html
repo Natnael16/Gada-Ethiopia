@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link th:href="@{\css\bootstrap.min.css}" rel="stylesheet" />
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <title>Gada Ethiopia</title>
+
+  </head>
+
+
+<body>
+
+    <header id="navbar" class="p-2 bg-dark text-white sticky-top justify-content-center">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-lg-start">
+                <a class="navbar-brand text-white mr-auto mr-lg-0 fs-1" href="#">GADA</a>
+
+                <ul class="nav col-12 col-lg-auto align-items-end me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="/" class="nav-link px-2 text-secondary">Home</a></li>
+                    <li>
+                        <span sec:authorize="hasAuthority('ADMIN')">
+                        <span class="dropdown col">
+                          <a class="nav-link px-2 text-white dropdown-toggle" type="text" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            Admin
+                          </a>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" href="/users">View users</a></li>
+                            <li><a class="dropdown-item" href="/listpost">View posts</a></li>
+                          </ul>
+                        </span>
+                        </span>
+                    </li>
+                    <li>
+                        <span sec:authorize="isAuthenticated">
+                        <a class="nav-link px-2 text-white" href="client">Profile</a></span></li>
+                    <li>
+                        <span sec:authorize="hasAnyAuthority('CLIENT','ADMIN')">
+                                <a class="nav-link px-2 text-white" href="/client/posts">My Posts</a></span></li>
+                    <li class=nav-link>
+                        <form class="form-inline my-2 my-lg-0 d-flex flex-grow-1" th:action="@{/Search}" method="get">
+                            <input class="form-control  rounded-0 flex-grow-1 border-0" id="q" type="text" name="q" placeholder="Search Donation Campaigns" aria-label="Search">
+                            <button class="btn btn-outline-secondary rounded-0 " type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-3"><circle cx="10.5" cy="10.5" r="7.5"></circle><line x1="21" y1="21" x2="15.8" y2="15.8"></line></svg>
+          </button>
+                        </form>
+                    </li>
+
+
+                    <li class=nav-link>
+                        <span sec:authorize="!isAuthenticated()">
+            <form th:action="@{/login}" method="get">
+              <input type="submit"  class="btn btn-sm btn-outline-primary"  value="Log In"/>
+              <input  th:action="@{/register}" type="submit" class="btn btn-sm btn-outline-primary" value="Sign Up"/>
+            </form>
+          </span>
+                    </li>
+                    <li sec:authorize="hasAnyAuthority('CLIENT', 'ADMIN')" class=nav-link style="right:0;">
+                        <a href="/post" class="text-decoration-none">
+                            <button type="button" class="btn btn-sm btn-success">Add Post </button></a>
+                        </span>
+
+                    </li>
+                    <li class=nav-link>
+                        <span sec:authorize="isAuthenticated()">
+                  <form th:action="@{/logout}" method="post">
+                      <input type="submit" class="btn btn-sm btn-light " value="Log Out" />
+                  </form>
+              </li>
+            </ul>
+        </div>
+    </div>
+</header>
+    <main class="min-vh-100">
+
+        <h1 class="m-3">Add posts here</h1>
+        <form method="post" th:action="@{/post}" class="container w-50" th:object="${posts}" enctype="multipart/form-data">
+            <div>
+                <label class="form-label" for="title"> Title: </label>
+                <input th:field="*{title}" type="text" th:class="|form-control ${#fields.hasErrors('title')? 'is-invalid': 'is-valid'}|">
+                <span class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">title
+                Error</span>
+
+                </div>
+        <div>
+
+            <label class="form-label" for="theme"> Theme: </label>
+            <textarea th:field="*{theme}" rows="4" type="text"
+                th:class="|form-control ${#fields.hasErrors('theme')? 'is-invalid': 'is-valid'}|"></textarea>
+            <span class="invalid-feedback" th:if="${#fields.hasErrors('theme')}" th:errors="*{theme}">theme
+
+                Error</span>
+            </div>
+            <div>
+                <label class="form-label" for="description"> Description: </label>
+                <textarea th:field="*{description}" rows="8" type="text" th:class="|form-control ${#fields.hasErrors('description')? 'is-invalid': 'is-valid'}|"></textarea>
+                <span class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">description
+                Error</span> </div>
+            <div>
+
+                <label class="form-label" for="goal"> Fund Amount Goal: </label>
+                <input th:field="*{goal}" type="text" th:class="|form-control ${#fields.hasErrors('goal')? 'is-invalid': 'is-valid'}|">
+                <span class="invalid-feedback" th:if="${#fields.hasErrors('goal')}" th:errors="*{goal}">goal
+                    Error</span>
+            </div>
+            <!-- <div>
+                <label class="form-label" for="deadline"> deadline: </label>
+                <input type="text" th:field="*{deadline}" th:class="|form-control ${#fields.hasErrors('deadline')? 'is-invalid': 'is-valid'}|">
+                <span class="invalid-feedback" th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}">deadline
+                    Error</span>
+            </div> -->
+
+
+
+        <div>
+                <label class="form-label" for="accountNumber"> Bank Account Number: </label>
+                <input th:field="*{accountNumber}" type="text" th:class="|form-control ${#fields.hasErrors('accountNumber')? 'is-invalid': 'is-valid'}|">
+                <span class="invalid-feedback" th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}">ACC Num Error</span>
+            </div>
+            <div>
+
+                <input name="image" type="file" accept="image/png, image/jpeg, image/jpg" title="Only .jpg, .jpeg, .png files are allowed" required>
+            </div>
+            <input type="submit" value="Submit" class="btn btn-primary center">
+            </form>
+            </main>
+            <footer class="text-center text-white bg-dark">
+                <div class="container pt-3">
+                    <section class="mb-3">
+                        <a class="btn btn-link btn-floating text-white btn-lg m-1" href="https://www.facebook.com/Gada-Ethiopia-100696342531359" role="button" data-mdb-ripple-color="dark"><i class="fab fa-facebook-f"></i
+
+        ></a>
+                        <a class="btn btn-link btn-floating text-white btn-lg m-1" href="#!" role="button" data-mdb-ripple-color="dark"><i class="fab fa-twitter"></i
+        ></a>
+                        <a class="btn btn-link btn-floating text-white btn-lg m-1" href="#!" role="button" data-mdb-ripple-color="dark"><i class="fab fa-instagram"></i
+        ></a>
+                        <a class="btn btn-link btn-floating text-white btn-lg m-1" href="https://github.com/Yared04/Gada-Ethiopia-" role="button" data-mdb-ripple-color="dark"><i class="fab fa-github"></i
+        ></a>
+                    </section>
+                </div>
+                <div class="text-center p-2" style="background-color: rgba(0, 0, 0, 0.2)">
+                    &copy; 2020 <b>GEDA</b> All rights reserved.
+                </div>
+            </footer>
+            <script th:src="@{\js\bootstrap.bundle.min.js}"></script>
+
+            <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" data-auto-a11y="true"></script>
+            <script src="js/jquery.min.js"></script>
+            <script src="js/bootstrap.min.js"></script>
+            <!-- <script src="js/slick.min.js"></script> -->
+            <!-- <script src="js/nouislider.min.js"></script> -->
+            <script src="js/jquery.zoom.min.js"></script>
+            <script src="js/main.js"></script>
+</body>
+
+</html>

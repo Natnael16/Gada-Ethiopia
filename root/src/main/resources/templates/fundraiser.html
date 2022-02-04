@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+
+<head>    
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <title>Gada Ethiopia</title>
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/css/fundraiser.css}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <header id="navbar" class="p-2 bg-dark text-white sticky-top justify-content-center">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-lg-start">
+                <a class="navbar-brand text-white mr-auto mr-lg-0 fs-1" href="#">GADA</a>
+
+                <ul class="nav col-12 col-lg-auto align-items-end me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="/" class="nav-link px-2 text-secondary">Home</a></li>
+                    <li>
+                        <span sec:authorize="hasAuthority('ADMIN')">
+                            <span class="dropdown col">
+                              <a class="nav-link px-2 text-white dropdown-toggle" type="text" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                Admin
+                              </a>
+                              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a class="dropdown-item" href="/users">View users</a></li>
+                                <li><a class="dropdown-item" href="/listpost">View posts</a></li>
+                              </ul>
+                            </span>
+                        </span>
+                    </li>
+                    <li>
+                        <span sec:authorize="isAuthenticated">
+                        <a class="nav-link px-2 text-white" href="client">Profile</a></span></li>
+                    <li>
+                        <span sec:authorize="hasAnyAuthority('CLIENT','ADMIN')">
+                                <a class="nav-link px-2 text-white" href="/client/posts">My Posts</a></span></li>
+                    <li class=nav-link>
+                        <form class="form-inline my-2 my-lg-0 d-flex flex-grow-1" th:action="@{/Search}" method="get">
+                            <input class="form-control  rounded-0 flex-grow-1 border-0" id="q" type="text" name="q" placeholder="Search Donation Campaigns" aria-label="Search">
+                            <button class="btn btn-outline-secondary rounded-0 " type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-3"><circle cx="10.5" cy="10.5" r="7.5"></circle><line x1="21" y1="21" x2="15.8" y2="15.8"></line></svg>
+              </button>
+                        </form>
+                    </li>
+
+
+                    <li class=nav-link>
+                        <span sec:authorize="!isAuthenticated()">
+                <form th:action="@{/login}" method="get">
+                  <input type="submit"  class="btn btn-sm btn-outline-primary"  value="Log In"/>
+                 
+                </form>
+              </span>
+                    </li>
+                    <li sec:authorize="hasAnyAuthority('CLIENT', 'ADMIN')" class=nav-link style="right:0;">
+                        <a href="/post" class="text-decoration-none">
+                            <button type="button" class="btn btn-success">Add Post </button></a>
+                        </span>
+
+                    </li>
+                    <li class=nav-link>
+                        <span sec:authorize="isAuthenticated()">
+                      <form th:action="@{/logout}" method="post">
+                          <input type="submit" class="btn btn-outline-primary " value="Log Out" />
+                      </form>
+                  </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+
+    <main class="min-vh-100">
+
+
+        <div class="container">
+            <div class="row">
+                <h1 class="title text-center m-3" th:text=${post.title}>The Title goes here</h1>
+                <hr>
+                <div class="col-md-8">
+                    <div class="row bg-light">
+
+
+                        <div class="col-md-12">
+                            <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <img th:src="|data:image;base64, ${post.Base64Img}|" class="d-block w-100" alt="...">
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="col-md-12">
+            <hr>
+            <h4>Fundraiser Organizer</h4>
+            <hr>
+            <h5> dd/mm/yy <small class="text-muted">Catagory</small>
+                <hr>
+            </h5>
+            <p th:text="${post.description}">
+
+            </p>
+
+
+            <a th:href="@{'/fundraiser/'+${post.id}+'/donate'}" class="btn btn-warning w-100 mt-2 mb-2  ">Donate Now</a>
+        </div>
+
+
+
+        <div class="donate-card col-md-4">
+
+          <div class="my-3 p-3 bg-body rounded shadow-sm">
+            <h5 class="card-title" th:text = "|${post.totalAmount} ETB Raised|">ETB Raised</h5>
+            <h6 class="card-subtitle mb-2 text-muted" th:text="|of ${post.Goal} Goal|">Goal</h6>
+            <h5 class="m-0" th:text=${donationAmount}></h5>
+            <p class="text-muted">Donations</p>
+
+            <div class="progress" style="height: 10px;">
+              <div class="progress-bar" role="progressbar" th:style="|width: ${((post.totalAmount*100)/post.Goal)}%;|" aria-valuenow="25" aria-valuemin="0"
+                aria-valuemax="100"></div>
+
+            </div>
+            <h6 class="card-subtitle m-2 text-muted" th:if="${post.goal &gt; post.totalAmount}" th:text="|${(post.Goal-post.totalAmount)} ETB left to reach ${post.Goal} |">500 ETB left to reach Goal</h6>
+
+            <a th:href="@{'/fundraiser/'+${post.id}+'/donate'}" class="btn btn-warning w-100 mt-2 mb-2 " >Donate Now</a>
+            <button class="btn btn-info w-100 mb-2 ">Share This Campaign</button>
+            <h6 class="border-bottom pb-2 mb-0">Recent Donations</h6>
+            <div class="d-flex text-muted pt-3" th:each ="d : ${Donations}">
+              <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32"
+                xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32"
+                preserveAspectRatio="xMidYMid slice" focusable="false">
+
+                <title>Placeholder</title>
+                <rect width="100%" height="100%" fill="#007bff" /><text x="50%" y="50%" fill="#007bff"
+                  dy=".3em">32x32</text>
+              </svg>
+
+
+              <p class="pb-3 mb-0 small lh-sm border-bottom">
+                <strong class="d-block text-dark" th:text=${d.donatorName}>Name</strong>
+                <small th:text=${d.amount}></small>
+              </p>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+        </div>
+        
+
+
+
+
+        <!-- Comments -->
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+          <h3 class="border-bottom pb-2 mb-0" id="comments">Comments</h3>
+
+
+
+          <div class="d-flex text-muted pt-1" th:each="c : ${comments}">
+            
+            <dl>
+
+            
+            <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="32" height="32"
+              xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32"
+              preserveAspectRatio="xMidYMid slice" focusable="false">
+              <rect width="100%" height="100%" fill="#007bff" /><text x="40%" y="40%" fill="#007bff"
+                dy=".3em">32x32</text>
+            </svg>
+
+             <span class="text-gray-dark" style="cursor:pointer;" th:text = "${c.getUser().getUsername()}"></span>
+            
+
+            <p class="pb-1 mb-0 small bg-light" style="margin-left: 3rem;  max-width: 60%; 
+             border: 1px; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border-top-right-radius: 10px; padding: 1.2rem;" 
+             
+            th:text="${c.comment}">
+              <strong class="d-block text-gray-dark">Name</strong>
+              may god be with you in all your endeavors.
+              <form th:action="@{'/fundraiser/'+ ${post.id}+'/delete'+ ${c.id}}" th:object="${comment}" style="display: inline;" method="post">
+              
+                <span style=" position: relative; top: -2.5rem;" th:if="${c.getUser().getUsername()}==${curUser}"><button class="btn" type="submit" value="submit"><i
+                      class="fas fa-archive" style="cursor: pointer;"></i></button></span>
+              </form>
+            </p>
+            
+          
+          </div>
+
+          <div sec:authorize = "!isAuthenticated()"> <a href="/login">Login(Sign up) to comment and be part of the community!</a></div>
+          <form  th:action="@{'/fundraiser/' + ${post.id} + '/c'}" method="post" class="container w-50 m-5" th:object="${c}" sec:authorize = "isAuthenticated()">
+            
+            <textarea  name="comment"  id="comment" onkeyup="success()" class="form-control" rows="4" cols="15"></textarea>
+
+            <button type="submit" id="commentbtn" class="btn btn-primary my-3" disabled>Comment</button>
+          </form>
+
+
+        </div>
+
+
+      </div>
+
+    </div>
+  </main>
+  <footer class="text-center text-white bg-dark">
+    <div class="container pt-3">
+                  <section class="mb-3">
+                        <a class="btn btn-link btn-floating text-white btn-lg m-1" href="https://www.facebook.com/Gada-Ethiopia-100696342531359" role="button" data-mdb-ripple-color="dark"><i class="fab fa-facebook-f"></i
+
+        ></a>
+                        <a class="btn btn-link btn-floating text-white btn-lg m-1" href="#!" role="button" data-mdb-ripple-color="dark"><i class="fab fa-twitter"></i
+        ></a>
+                        <a class="btn btn-link btn-floating text-white btn-lg m-1" href="#!" role="button" data-mdb-ripple-color="dark"><i class="fab fa-instagram"></i
+        ></a>
+                        <a class="btn btn-link btn-floating text-white btn-lg m-1" href="https://github.com/Yared04/Gada-Ethiopia-" role="button" data-mdb-ripple-color="dark"><i class="fab fa-github"></i
+        ></a>
+      </section>
+    </div>
+    <div class="text-center p-2" style="background-color: rgba(0, 0, 0, 0.2)">
+      &copy; 2020 <b>GADA</b> All rights reserved.
+    </div>
+  </footer>
+  <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" data-auto-a11y="true"></script>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <title th:text=${post.title}> </title>
+
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+<link th:href="@{/css/donationPage.css}" rel="stylesheet"/>
+ 
+     </head>
+    
+
+     <body class="bg-light">
+
+
+      <header class="p-2 bg-dark text-white">
+        <div class="container">
+          <div class="d-flex flex-wrap justify-content-lg-start">
+            <a class="navbar-brand text-white mr-auto mr-lg-0 fs-1" href="#">GEDA</a>
+  
+            <ul
+              class="nav col-12 col-lg-auto align-items-end me-lg-auto mb-2 justify-content-center mb-md-0"
+            >
+            <li><a href="/" class="nav-link px-2 text-white">Home</a></li>
+              <li>
+                <a href="#" class="nav-link px-2 text-white"
+                  >Campaign Dashboard</a
+                >
+              </li>
+              <li>  <a class="nav-link px-2 text-white" href="#">Notifications</a></li>
+            </ul>
+            <div class="text-end">
+                <span sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post">
+                    <input
+                      type="submit"
+                      class="btn btn-sm btn-light"
+                      value="Log Out"
+                    />
+                  </form>
+                  </span>
+                <span sec:authorize="hasAnyAuthority('CLIENT', 'ADMIN')">
+                  <span class="dropdown col">
+                    <button
+                      class="btn btn-sm btn-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Admin
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                      <li><a class="dropdown-item" href="/users">View users</a></li>
+                      <li>
+                        <a class="dropdown-item" href="/listpost">View posts</a>
+                      </li>
+                    </ul>
+                  </ul>
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+ 
+      <main class="min-vh-100">
+       <div class="container">
+        <div class="my-3 p-3 bg-body rounded row">
+          <div class="col-sm-6 p-3">
+            <div class="donation-information d-flex text-muted bg-body p-3 align-items-center rounded">
+              <img class="img-thumbnail" th:src="@{http://www.downloadclipart.net/large/poor-png-hd.png}" />
+              <div class="m-2">
+                <h5 class="me-2 mb-0 lh-sm">
+                  <strong class="d-block text-gray-dark">You are Donating For</strong>
+                </h5>
+                <h4 class="me-2 mb-0 lh-sm">
+                  <strong class="d-block text-dark" th:text=${post.title}>Name</strong>
+                </h4>
+              </div>
+              
+            </div>
+
+            <form method="POST"
+            th:action="@{donate}"
+            th:object="${donation}" 
+            class="row g-3 p-3">
+
+              <div class="col-md-7">
+                <label for="amount" class="form-label" onkeyup="success()">Amount</label>
+                <input th:class="|form-control ${#fields.hasErrors('amount')? 'is-invalid': 'is-valid'}|"
+                type="text" th:field="*{amount}" >
+                <div
+                  class="invalid-feedback"
+                  th:if="${#fields.hasErrors('amount')}"
+                  
+                    >
+                    <p th:text="|Please enter Amount greater than 5.0|"></p>
+                </div>
+              </div>
+
+              <div class="col-md-7">
+                <label for="donatorName" class="form-label">Name</label>
+                <input th:class="|form-control ${#fields.hasErrors('donatorName')? 'is-invalid': 'is-valid'}|"
+                type="text" name="donatorName" id="donatorName" th:value=${user} >
+                <div
+                  class="invalid-feedback"
+                  th:if="${#fields.hasErrors('donatorName')}"
+                  th:errors="*{donatorName}"
+                    >
+                </div>
+              </div>
+
+              <div class="col-md-7">
+                <label for="donatorAccount" class="form-label">Credit Card Number</label>
+                <input th:class="|form-control ${#fields.hasErrors('donatorAccount')? 'is-invalid': 'is-valid'}|"
+                type="text" th:field="*{donatorAccount}" id="donatorAccount">
+                <div
+                  class="invalid-feedback"
+                  th:if="${#fields.hasErrors('donatorAccount')}"
+                  th:errors="*{donatorAccount}"
+                    >
+                </div>
+              </div>
+              
+              <div class="col-12">
+                <h6> You can leave the Name field blank to Make your donation<strong> Anonymous</strong> </h6> 
+              </div>
+              <div class="col-md-6 d-flex">
+                <button type="submit"  class="btn btn-primary flex-grow-1">Donate</button>
+              </div>
+              <!--modal-->
+              <!-- Button trigger modal -->
+              
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        ...
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <!-- modal -->
+            </form> 
+           </div>
+          
+           
+          <div class="col-sm-6 p-3">
+              <div class="my-3 p-3 bg-body rounded">
+                
+              </div>
+          </div>
+
+        </div>
+         
+
+       </div>
+      </main>
+      <footer class="text-center text-white bg-dark">
+          <div class="container pt-3">
+            <section class="mb-3">
+              <a
+                class="btn btn-link btn-floating text-white btn-lg m-1"
+                href="#!"
+                role="button"
+                data-mdb-ripple-color="dark"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a
+                class="btn btn-link btn-floating text-white btn-lg m-1"
+                href="#!"
+                role="button"
+                data-mdb-ripple-color="dark"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a
+                class="btn btn-link btn-floating text-white btn-lg m-1"
+                href="#!"
+                role="button"
+                data-mdb-ripple-color="dark"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a
+                class="btn btn-link btn-floating text-white btn-lg m-1"
+                href="#!"
+                role="button"
+                data-mdb-ripple-color="dark"
+                ><i class="fab fa-github"></i
+              ></a>
+            </section>
+          </div>
+          <div class="text-center p-2" style="background-color: rgba(0, 0, 0, 0.2)">
+            &copy; 2020 <b>GEDA</b> All rights reserved.
+          </div>
+        </footer>
+        <script
+          src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"
+          data-auto-a11y="true"
+          ></script>
+        ></script>
+   
+       <script th:src="@{\js\bootstrap.bundle.min.js}"></script>
+     </body>
+   </html>

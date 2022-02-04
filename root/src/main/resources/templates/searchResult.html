@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link th:href="@{\css\bootstrap.min.css}" rel="stylesheet" />
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <title th:text=${q}></title>
+
+</head>
+
+<body>
+    <header class="p-2 bg-dark text-white">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-lg-start">
+                <a class="navbar-brand text-white mr-auto mr-lg-0 fs-1" href="#">GADA</a>
+
+                <ul class="nav col-12 col-lg-auto align-items-end me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="/" class="nav-link px-2 text-secondary">Home</a></li>
+                    <li>
+                        <span sec:authorize="isAuthenticated">
+                      <a class="nav-link px-2 text-white" href="client">Profile</a></span></li>
+
+                    <li>
+                        <span sec:authorize="hasAnyAuthority('CLIENT','ADMIN')">
+                          <a class="nav-link px-2 text-white" href="/client/posts">My Posts</a></span></li>
+
+                    <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon"></span>
+</button>
+
+                    <li class=nav-link style="right:0;">
+                        <span sec:authorize="!isAuthenticated()">
+        <form th:action="@{/login}" method="get">
+          <input type="submit"  class="btn btn-sm btn-primary"  value="Log In"/>
+          <input  th:action="@{/register}" type="submit" class="btn btn-sm btn-primary" value="Sign Up"/>
+        </form>
+      </span>
+                    </li>
+
+                    <li sec:authorize="hasAnyAuthority('CLIENT', 'ADMIN')" class=nav-link style="right:0;">
+                        <a href="/post" class="text-decoration-none">
+                            <button type="button" class="btn btn-sm btn-success">Add Post </button></a>
+                        </span>
+                        <span sec:authorize="hasAuthority('ADMIN')">
+        <span class="dropdown col">
+          <button class="btn btn-sm btn-success dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Admin
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" href="/users">View users</a></li>
+            <li><a class="dropdown-item" href="/listpost">View posts</a></li>
+          </ul>
+        </span>
+                        </span>
+                    </li>
+                    <li class=nav-link>
+                        <span sec:authorize="isAuthenticated()">
+                  <form th:action="@{/logout}" method="post">
+                      <input type="submit" class="btn btn-sm btn-light " value="Log Out" />
+                  </form>
+              </li>
+        </ul>
+    </div>
+</div>
+</header>
+
+
+      <main class="min-vh-100">
+    
+    <div class="container">
+        <div class="row m-0 justify-content-center ">
+            <div class="d-flex flex-column col-6 vh-100 align-content-center justify-content-center" th:if="${post.size() == 0}">
+                <img class="w-lg-25 w-md-50 w-50  m-3 align-self-center"src="images/noresult1.png" alt="">
+                <h3 class="muted-text text-center">Oops No result was found!</h3>
+            </div>
+            
+            <div class="my-3 p-2 bg-body rounded shadow-sm col-lg-10 col-12" th:each = "t : ${post}">
+                <div class="row g-0" style="height: max-content;">
+                  <div class="col-md-4 mh-100" >
+                    <img th:src="|data:image;base64,${t.Base64Img}|" class="img-fluid rounded mh-100" alt="...">
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h4 class="card-title" th:text=${t.title}>title</h4>
+                      <p class="card-text" th:text = ${t.theme}></p>
+                      <small></small>
+                      <h3 class="card-text" >
+                      <hr style="width: 90%; height: 3px; color: rgb(17, 34, 34); border-radius: 1px;"/>  
+                      <small th:text ="|ETB ${t.totalAmount} Raised|"></small>
+                      <hr style="width: 90%; height: 3px; color: rgb(26, 43, 43); border-radius: 1px;"/>  </h3>
+                      <p class="card-text">Posted on <small class="text-muted" th:text=${t.date.toLocalDate()}> </small></p>
+                      <a th:href="@{'/fundraiser/'+${t.id}}" class="btn btn-warning w-50 mb-0 flex-grow-1">Donate</a>
+                    </div>
+                  </div>
+            </div>
+        </div>    
+    </div>
+    
+</main>
+<footer class="text-center text-white bg-dark">
+    <div class="container pt-3">
+      <section class="mb-3">
+        <a
+          class="btn btn-link btn-floating text-white btn-lg m-1"
+          href="#!"
+          role="button"
+          data-mdb-ripple-color="dark"
+          ><i class="fab fa-facebook-f"></i
+        ></a>
+        <a
+          class="btn btn-link btn-floating text-white btn-lg m-1"
+          href="#!"
+          role="button"
+          data-mdb-ripple-color="dark"
+          ><i class="fab fa-twitter"></i
+        ></a>
+        <a
+          class="btn btn-link btn-floating text-white btn-lg m-1"
+          href="#!"
+          role="button"
+          data-mdb-ripple-color="dark"
+          ><i class="fab fa-instagram"></i
+        ></a>
+        <a
+          class="btn btn-link btn-floating text-white btn-lg m-1"
+          href="#!"
+          role="button"
+          data-mdb-ripple-color="dark"
+          ><i class="fab fa-github"></i
+        ></a>
+      </section>
+    </div>
+    <div class="text-center p-2" style="background-color: rgba(0, 0, 0, 0.2)">
+      &copy; 2020 <b>GEDA</b> All rights reserved.
+    </div>
+  </footer>
+  <script th:src="@{\js\bootstrap.bundle.min.js}"></script>
+
+  <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" data-auto-a11y="true"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <!-- <script src="js/slick.min.js"></script> -->
+  <!-- <script src="js/nouislider.min.js"></script> -->
+  <script src="js/jquery.zoom.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

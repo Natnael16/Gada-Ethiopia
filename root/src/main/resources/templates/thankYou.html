@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+    <link th:href="@{\css\bootstrap.min.css}" rel="stylesheet" />
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <!-- Custom stlylesheet -->
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <title>Gada Ethiopia</title>
+
+</head>
+
+<body>
+    <header id="navbar" class="p-2 bg-dark text-white sticky-top justify-content-center">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-lg-start">
+                <a class="navbar-brand text-white mr-auto mr-lg-0 fs-1" href="#">GADA</a>
+
+                <ul class="nav col-12 col-lg-auto align-items-end me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="/" class="nav-link px-2 text-secondary">Home</a></li>
+                    <li>
+                        <span sec:authorize="hasAuthority('ADMIN')">
+                            <span class="dropdown col">
+                              <a class="nav-link px-2 text-white dropdown-toggle" type="text" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                Admin
+                              </a>
+                              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a class="dropdown-item" href="/users">View users</a></li>
+                                <li><a class="dropdown-item" href="/listpost">View posts</a></li>
+                              </ul>
+                            </span>
+                        </span>
+                    </li>
+                    <li>
+                        <span sec:authorize="isAuthenticated">
+                        <a class="nav-link px-2 text-white" href="client">Profile</a></span></li>
+
+                    <li>
+                        <span sec:authorize="hasAnyAuthority('CLIENT','ADMIN')">
+                          <a class="nav-link px-2 text-white" href="/client/posts">My Posts</a></span></li>
+                    <li class=nav-link>
+                        <form class="form-inline my-2 my-lg-0 d-flex flex-grow-1" th:action="@{/Search}" method="get">
+                            <input class="form-control  rounded-0 flex-grow-1 border-0" id="q" type="text" name="q" placeholder="Search Donation Campaigns" aria-label="Search">
+                            <button class="btn btn-outline-secondary rounded-0 " type="submit"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-3"><circle cx="10.5" cy="10.5" r="7.5"></circle><line x1="21" y1="21" x2="15.8" y2="15.8"></line></svg>
+              </button>
+                        </form>
+                    </li>
+
+
+                    <li class=nav-link>
+                        <span sec:authorize="!isAuthenticated()">
+                <form th:action="@{/login}" method="get">
+                  <input type="submit"  class="btn btn-sm btn-outline-primary"  value="Log In"/>
+                 
+                </form>
+              </span>
+                    </li>
+                    <li sec:authorize="hasAnyAuthority('CLIENT', 'ADMIN')" class=nav-link style="right:0;">
+                        <a href="/post" class="text-decoration-none">
+                            <button type="button" class="btn btn-success">Add Post </button></a>
+                        </span>
+
+                    </li>
+                    <li class=nav-link>
+                        <span sec:authorize="isAuthenticated()">
+                      <form th:action="@{/logout}" method="post">
+                          <input type="submit" class="btn btn-outline-primary " value="Log Out" />
+                      </form>
+                  </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+
+      <main class="min-vh-100">
+<!-- Modal -->
+<div th:fragment="modal(id)" class="modal fade" th:id="${id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                        </button>
+            </div>
+            <div class="modal-body">
+                Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        </div>
+        </div>
+        </main>
+        <footer class="text-center text-white bg-dark">
+            <div class="container pt-3">
+                <section class="mb-3">
+                    <a class="btn btn-link btn-floating text-white btn-lg m-1" href="#!" role="button" data-mdb-ripple-color="dark"><i class="fab fa-facebook-f"></i
+        ></a>
+                    <a class="btn btn-link btn-floating text-white btn-lg m-1" href="#!" role="button" data-mdb-ripple-color="dark"><i class="fab fa-twitter"></i
+        ></a>
+                    <a class="btn btn-link btn-floating text-white btn-lg m-1" href="#!" role="button" data-mdb-ripple-color="dark"><i class="fab fa-instagram"></i
+        ></a>
+                    <a class="btn btn-link btn-floating text-white btn-lg m-1" href="#!" role="button" data-mdb-ripple-color="dark"><i class="fab fa-github"></i
+        ></a>
+                </section>
+            </div>
+            <div class="text-center p-2" style="background-color: rgba(0, 0, 0, 0.2)">
+                &copy; 2020 <b>GEDA</b> All rights reserved.
+            </div>
+        </footer>
+        <script th:src="@{\js\bootstrap.bundle.min.js}"></script>
+
+        <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" data-auto-a11y="true"></script>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <!-- <script src="js/slick.min.js"></script> -->
+        <!-- <script src="js/nouislider.min.js"></script> -->
+        <script src="js/jquery.zoom.min.js"></script>
+        <script src="js/main.js"></script>
+</body>
+
+</html>
